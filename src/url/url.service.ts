@@ -13,10 +13,9 @@ export class UrlService {
     @InjectModel('Counter') private readonly counterModel: Model<Counter>,
   ) {}
 
-  async getShorten(longUrl: string) {
+  async getShorten(longUrl: string): Promise<string> {
     // Check if already exists
     const existing = await this.urlModel.findOne({ longUrl });
-    console.log(`Existing Url : ${existing}`);
     if (existing) return existing.shortCode;
 
     let id: CounterDocument;
@@ -52,5 +51,18 @@ export class UrlService {
     }
 
     return shortCode;
+  }
+
+  async getRedirectUrl(shortCode: string): Promise<string> {
+    // Check if exists
+    const existing = await this.urlModel.findOne({ shortCode });
+    if (!existing) {
+      throw new HttpException(
+        'Original Url not exists in DB for the given code',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    const url = existing.longUrl;
+    return url;
   }
 }
