@@ -9,7 +9,7 @@ export class UrlController {
   @Post('shorten')
   async shorten(@Body('longUrl') longUrl: string) {
     const shortCode = await this.urlService.getShorten(longUrl);
-    return { shortUrl: `http://localhost:3000/${shortCode}` };
+    return { shortUrl: `http://localhost:3000/url/${shortCode}` };
   }
 
   @Get('/:code')
